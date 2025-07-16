@@ -20,7 +20,9 @@ public class CadLibMain {
         for (int i = 0; i < 1500; i++) {
             System.out.println(" --- begin --- " + i);
             CadLibMain.createImage();
-            CadLibMain.runExportJpeg();
+            CadLibMain.runExportPng();
+            // CadLibMain.runExportJpeg2();
+            // CadLibMain.runExportSvg();
             CadLibMain.cadClose();
             System.out.println(" --- end --- " + i);
         }
@@ -30,7 +32,7 @@ public class CadLibMain {
         CadImage = cadLib.CreateCAD(null, fileName);
     }
 
-    private static void runExportJpeg() {
+    private static void runExportPng() {
         String input = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<cadsofttools version=\"2\">\n" +
                 "    <!-- Description:  Returns picture of the current view in Base64 encoding. -->\n" +
@@ -52,6 +54,29 @@ public class CadLibMain {
                 "</cadsofttools>";
         Variant.VARIANT var = new Variant.VARIANT();
         int result = cadLib.ProcessXML(CadImage, input, var.getPointer());
+    }
+
+    private static void runExportJpeg2() {
+        String params =
+                "      <ExportParams FileName = \"%SGDRAWINGSPATH%\\Image\" Format=\".jpeg\"><!-- attribute 'FileName' calls additional saving to file -->\n" +
+                        "     <Width>300</Width>\n" +
+                        "     <Height>-1</Height>\n" +
+                        "     <Proportional>True</Proportional>\n" +
+                        "     <BitPerPixel>24</BitPerPixel>\n" +
+                        "     <Quality>100</Quality>\n" +
+                        "     <MeasureInPixels>True</MeasureInPixels>\n" +
+                        "     <DPUX>96</DPUX>\n" +
+                        "     <DPUY>96</DPUY>\n" +
+                        "     <Compression>LZW</Compression>\n" +
+                        "</ExportParams>";
+        CadLib.INSTANCE.SaveCADWithXMLParametrs(CadImage, params);
+    }
+
+    private static void runExportSvg() {
+        String params = "<ExportParams FileName = \"%SGDRAWINGSPATH%\\ImageSvg\" Format=\".svg\"><!-- attribute 'FileName' calls additional saving to file -->\n" +
+                "</ExportParams>";
+        CadLib cadLib = CadLib.INSTANCE;
+        cadLib.SaveCADWithXMLParametrs(CadImage, params);
     }
 
     private static void cadClose() {
